@@ -35,24 +35,6 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
     self.valid_dataset = dc.data.NumpyDataset(
         X=np.random.rand(20, 5), y=np.random.rand(20, 1))
 
-  def test_rf_example_hyperparamter_rounding(self):
-    """Test a simple example of optimizing a RF model with a gaussian process."""
-
-    optimizer = dc.hyper.GaussianProcessHyperparamOpt(self.rf_model_builder)
-    params_dict = {"n_estimators": 10}
-    transformers = []
-    metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
-
-    best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
-        params_dict, self.train_dataset, self.valid_dataset, metric, max_iter=1)
-
-    print(best_hyperparams)
-    print(all_results)
-    valid_score = best_model.evaluate(self.valid_dataset, [metric],
-                                      transformers)
-    assert valid_score["pearson_r2_score"] == max(all_results.values())
-    assert valid_score["pearson_r2_score"] > 0
-
   def test_rf_example(self):
     """Test a simple example of optimizing a RF model with a gaussian process."""
 
@@ -63,6 +45,24 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
 
     best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
         params_dict, self.train_dataset, self.valid_dataset, metric, max_iter=2)
+
+    print(best_hyperparams)
+    print(all_results)
+    valid_score = best_model.evaluate(self.valid_dataset, [metric],
+                                      transformers)
+    assert valid_score["pearson_r2_score"] == max(all_results.values())
+    assert valid_score["pearson_r2_score"] > 0
+
+  def test_rf_example_hyperparamter_rounding(self):
+    """Test a simple example of optimizing a RF model with a gaussian process."""
+
+    optimizer = dc.hyper.GaussianProcessHyperparamOpt(self.rf_model_builder)
+    params_dict = {"n_estimators": 10}
+    transformers = []
+    metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
+
+    best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
+        params_dict, self.train_dataset, self.valid_dataset, metric, max_iter=1)
 
     print(best_hyperparams)
     print(all_results)
