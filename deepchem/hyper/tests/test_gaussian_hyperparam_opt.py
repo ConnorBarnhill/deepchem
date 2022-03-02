@@ -44,7 +44,7 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
     metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
 
     best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
-        params_dict, self.train_dataset, self.valid_dataset, metric, max_iter=1)
+        params_dict, self.train_dataset, self.valid_dataset, metric, max_iter=3)
 
     print(best_hyperparams)
     print(all_results)
@@ -150,8 +150,6 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
         max_iter=1,
         use_max=False)
 
-    print(best_hyperparams)
-    print(all_results)
     valid_score = best_model.evaluate(valid_dataset, [metric], transformers)
     assert valid_score["mean-mean_squared_error"] == min(all_results.values())
     assert valid_score["mean-mean_squared_error"] > 0
@@ -196,8 +194,6 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
           use_max=False)
       valid_score = best_model.evaluate(valid_dataset, [metric], transformers)
 
-    print(best_hyperparams)
-    print(all_results)
     # Test that 2 parameters were optimized
     for hp_str in all_results.keys():
       # Recall that the key is a string of the form _batch_size_39_learning_rate_0.01 for example
@@ -239,8 +235,6 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
         max_iter=1,
         use_max=False)
 
-    print(best_hyperparams)
-    print(all_results)
     valid_score = best_model.evaluate(valid_dataset, [metric], transformers)
     assert valid_score["mean-mean_squared_error"] == min(all_results.values())
     assert valid_score["mean-mean_squared_error"] > 0
