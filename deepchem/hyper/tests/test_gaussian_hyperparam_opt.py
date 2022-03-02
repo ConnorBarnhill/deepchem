@@ -35,7 +35,7 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
     self.valid_dataset = dc.data.NumpyDataset(
         X=np.random.rand(20, 5), y=np.random.rand(20, 1))
 
-  def test_rf_example(self):
+  def test_rf_example_i(self):
     """Test a simple example of optimizing a RF model with a gaussian process."""
 
     optimizer = dc.hyper.GaussianProcessHyperparamOpt(self.rf_model_builder)
