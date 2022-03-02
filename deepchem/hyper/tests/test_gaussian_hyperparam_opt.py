@@ -26,16 +26,23 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
     def rf_model_builder(**model_params):
       rf_params = {k: v for (k, v) in model_params.items() if k != 'model_dir'}
       model_dir = model_params['model_dir']
-      sklearn_model = sklearn.ensemble.RandomForestRegressor(**rf_params)
+      sklearn_model = sklearn.ensemble.RandomForestRegressor(**rf_params, random_state=1)
       return dc.models.SklearnModel(sklearn_model, model_dir)
+    
+    # def tree_model_builder(**model_params):
+    #   rf_params = {k: v for (k, v) in model_params.items() if k != 'model_dir'}
+    #   model_dir = model_params['model_dir']
+    #   sklearn_model = sklearn.ensemble.DecisionTreeRegressor(**rf_params)
+    #   return dc.models.SklearnModel(sklearn_model, model_dir)
 
     self.rf_model_builder = rf_model_builder
+    # self.tree_model_builder = tree_model_builder
     self.train_dataset = dc.data.NumpyDataset(
         X=np.random.rand(50, 5), y=np.random.rand(50, 1))
     self.valid_dataset = dc.data.NumpyDataset(
         X=np.random.rand(20, 5), y=np.random.rand(20, 1))
 
-  def test_rf_example_i(self):
+  def test_rf_example(self):
     """Test a simple example of optimizing a RF model with a gaussian process."""
 
     optimizer = dc.hyper.GaussianProcessHyperparamOpt(self.rf_model_builder)
@@ -53,7 +60,7 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
     assert valid_score["pearson_r2_score"] == max(all_results.values())
     assert valid_score["pearson_r2_score"] > 0
 
-  def test_rf_example_hyperparamter_rounding(self):
+  def test_tree_example_hyperparamter_rounding(self):
     """Test a simple example of optimizing a RF model with a gaussian process."""
 
     optimizer = dc.hyper.GaussianProcessHyperparamOpt(self.rf_model_builder)
