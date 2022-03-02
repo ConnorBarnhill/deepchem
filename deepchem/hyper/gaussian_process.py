@@ -377,7 +377,7 @@ class GaussianProcessHyperparamOpt(HyperparamOpt):
       hp_str_parts = hp_str.split('_')
       hp_str_parts[-1] = str(int(hp_str_parts[-1]) + 1)
       hp_str_fixed = '_'.join(hp_str_parts)
-      all_models[hp_str_fixed]
+      best_model = all_models[hp_str_fixed]
 
     # Compare best model to default hyperparameters
     if log_file:
