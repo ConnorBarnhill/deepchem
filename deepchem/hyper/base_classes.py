@@ -60,9 +60,19 @@ def _convert_filename_to_hyperparam_dict(filename: str) -> Dict[str, Any]:
     key = str_parts.pop(0)
     value = str_parts.pop(0)
     try:
+      # first try to convert to int
       value = int(value)
     except ValueError:
-      value = float(value)
+      try:
+        # then try to convert to float 
+        value = float(value)
+      except ValueError:
+        # if can't convert to int or float, it's a string and the key was of the
+        # form 'x_y'. reconstruct the key, add it to the beginning of the list, 
+        # then try again
+        key = key + '_' + value
+        str_parts.insert(0, key)
+        continue
 
     output_dict[key] = value
 
