@@ -386,8 +386,6 @@ class GaussianProcessHyperparamOpt(HyperparamOpt):
           best_hp_str = result_hp_str
 
     hyper_parameters = _convert_filename_to_hyperparam_dict(best_hp_str)
-    # print(hp_opt)
-    # print(all_models)
     best_model = all_models[best_hp_str]
 
     # Compare best model to default hyperparameters

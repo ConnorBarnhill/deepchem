@@ -26,14 +26,9 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
     def rf_model_builder(**model_params):
       rf_params = {k: v for (k, v) in model_params.items() if k != 'model_dir'}
       model_dir = model_params['model_dir']
-      sklearn_model = sklearn.ensemble.RandomForestRegressor(**rf_params, random_state=1)
+      sklearn_model = sklearn.ensemble.RandomForestRegressor(
+          **rf_params, random_state=123)
       return dc.models.SklearnModel(sklearn_model, model_dir)
-    
-    # def tree_model_builder(**model_params):
-    #   rf_params = {k: v for (k, v) in model_params.items() if k != 'model_dir'}
-    #   model_dir = model_params['model_dir']
-    #   sklearn_model = sklearn.ensemble.DecisionTreeRegressor(**rf_params)
-    #   return dc.models.SklearnModel(sklearn_model, model_dir)
 
     self.rf_model_builder = rf_model_builder
     # self.tree_model_builder = tree_model_builder
@@ -60,24 +55,6 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
     assert valid_score["pearson_r2_score"] == max(all_results.values())
     assert valid_score["pearson_r2_score"] > 0
 
-  def test_tree_example_hyperparamter_rounding(self):
-    """Test a simple example of optimizing a RF model with a gaussian process."""
-
-    optimizer = dc.hyper.GaussianProcessHyperparamOpt(self.rf_model_builder)
-    params_dict = {"n_estimators": 10}
-    transformers = []
-    metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
-
-    best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
-        params_dict, self.train_dataset, self.valid_dataset, metric, max_iter=1)
-
-    print(best_hyperparams)
-    print(all_results)
-    valid_score = best_model.evaluate(self.valid_dataset, [metric],
-                                      transformers)
-    assert valid_score["pearson_r2_score"] == max(all_results.values())
-    assert valid_score["pearson_r2_score"] > 0
-
   def test_rf_example_min(self):
     """Test a simple example of optimizing a RF model with a gaussian process looking for minimum score."""
 
@@ -95,8 +72,6 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
         use_max=False,
         max_iter=2)
 
-    print(best_hyperparams)
-    print(all_results)
     valid_score = best_model.evaluate(self.valid_dataset, [metric],
                                       transformers)
     assert valid_score["pearson_r2_score"] == min(all_results.values())
@@ -118,8 +93,6 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
           logdir=tmpdirname,
           max_iter=2)
 
-    print(best_hyperparams)
-    print(all_results)
     valid_score = best_model.evaluate(self.valid_dataset, [metric],
                                       transformers)
     assert valid_score["pearson_r2_score"] == max(all_results.values())

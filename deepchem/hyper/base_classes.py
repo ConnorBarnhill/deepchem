@@ -51,7 +51,6 @@ def _convert_filename_to_hyperparam_dict(filename: str) -> Dict[str, Any]:
     Maps string of hyperparameter name to int/float/string/list etc.
   """
   str_parts = filename.split('_')
-  print(str_parts)
   # remove empty string due to string starting with _
   str_parts.pop(0)
 
