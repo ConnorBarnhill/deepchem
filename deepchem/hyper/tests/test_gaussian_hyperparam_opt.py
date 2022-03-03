@@ -27,11 +27,10 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
       rf_params = {k: v for (k, v) in model_params.items() if k != 'model_dir'}
       model_dir = model_params['model_dir']
       sklearn_model = sklearn.ensemble.RandomForestRegressor(
-          **rf_params, random_state=456)
+          **rf_params, random_state=111)
       return dc.models.SklearnModel(sklearn_model, model_dir)
 
     self.rf_model_builder = rf_model_builder
-    # self.tree_model_builder = tree_model_builder
     self.train_dataset = dc.data.NumpyDataset(
         X=np.random.rand(50, 5), y=np.random.rand(50, 1))
     self.valid_dataset = dc.data.NumpyDataset(
@@ -46,7 +45,7 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
     metric = dc.metrics.Metric(dc.metrics.pearson_r2_score)
 
     best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
-        params_dict, self.train_dataset, self.valid_dataset, metric, max_iter=2)
+        params_dict, self.train_dataset, self.valid_dataset, metric, max_iter=3)
 
     print(best_hyperparams)
     print(all_results)
