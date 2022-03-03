@@ -10,7 +10,8 @@ from deepchem.data import Dataset
 from deepchem.trans import Transformer
 from deepchem.metrics import Metric
 from deepchem.hyper.base_classes import HyperparamOpt
-from deepchem.hyper.base_classes import _convert_hyperparam_dict_to_filename
+from deepchem.hyper.base_classes import _convert_hyperparam_dict_to_filename, \
+  _convert_filename_to_hyperparam_dict
 
 logger = logging.getLogger(__name__)
 
@@ -358,26 +359,36 @@ class GaussianProcessHyperparamOpt(HyperparamOpt):
     logger.info("Max number of iteration: %i" % max_iter)
     gpgo.run(max_iter=max_iter)
 
-    hp_opt, valid_performance_opt = gpgo.getResult()
-    hyper_parameters = {}
-    for hp in param_keys:
-      if param_range[hp][0] == "int":
-        hyper_parameters[hp] = int(round(hp_opt[hp]))
-      else:
-        # FIXME: Incompatible types in assignment
-        hyper_parameters[hp] = float(hp_opt[hp])  # type: ignore
-    hp_str = _convert_hyperparam_dict_to_filename(hyper_parameters)
+    # hp_opt, valid_performance_opt = gpgo.getResult()
+    # hyper_parameters = {}
+    # for hp in param_keys:
+    #   if param_range[hp][0] == "int":
+    #     hyper_parameters[hp] = int(round(hp_opt[hp]))
+    #   else:
+    #     # FIXME: Incompatible types in assignment
+    #     hyper_parameters[hp] = float(hp_opt[hp])  # type: ignore
+    # hp_str = _convert_hyperparam_dict_to_filename(hyper_parameters)
 
     # Let's fetch the model with the best parameters
-    print(hp_opt)
-    print(all_models)
-    try:
-      best_model = all_models[hp_str]
-    except KeyError:
-      hp_str_parts = hp_str.split('_')
-      hp_str_parts[-1] = str(int(hp_str_parts[-1]) + 1)
-      hp_str_fixed = '_'.join(hp_str_parts)
-      best_model = all_models[hp_str_fixed]
+    best_score = None
+    best_hp_str = None
+    for result_hp_str, opt_score in all_results.items():
+      if best_score is None:
+        best_score = opt_score
+        best_hp_str = result_hp_str
+      elif use_max:
+        if opt_score > best_score:
+          best_score = opt_score
+          best_hp_str = result_hp_str
+      else:
+        if opt_score < best_score:
+          best_score = opt_score
+          best_hp_str = result_hp_str
+
+    hyper_parameters = _convert_filename_to_hyperparam_dict(best_hp_str)
+    # print(hp_opt)
+    # print(all_models)
+    best_model = all_models[best_hp_str]
 
     # Compare best model to default hyperparameters
     if log_file:

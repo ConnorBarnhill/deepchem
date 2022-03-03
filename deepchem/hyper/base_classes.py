@@ -36,6 +36,38 @@ def _convert_hyperparam_dict_to_filename(hyper_params: Dict[str, Any]) -> str:
   return filename
 
 
+def _convert_filename_to_hyperparam_dict(filename: str) -> Dict[str, Any]:
+  """Helper function that converts filename string created from the 
+  _convert_hyperparam_dict_to_filename function to a dictionary of hyperparameters.
+
+  Parameters
+  ----------
+  filename: str
+    A filename of form "_key1_value1_value2_..._key2..."
+
+  Returns
+  -------
+  output_dict: Dict
+    Maps string of hyperparameter name to int/float/string/list etc.
+  """
+  str_parts = filename.split('_')
+  # remove empty string due to string starting with _
+  str_parts.pop(0)
+
+  output_dict = {}
+  while str_parts:
+    key = str_parts.pop(0)
+    value = str_parts.pop(0)
+    try:
+      value = int(value)
+    except ValueError:
+      value = float(value)
+      
+    output_dict[key] = value
+
+  return output_dict
+
+
 class HyperparamOpt(object):
   """Abstract superclass for hyperparameter search classes.
 
