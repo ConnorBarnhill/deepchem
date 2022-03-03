@@ -53,6 +53,8 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
                                       transformers)
     assert valid_score["pearson_r2_score"] == max(all_results.values())
     assert valid_score["pearson_r2_score"] > 0
+    assert best_hyperparams['n_estimators'] == 9
+
 
   def test_rf_example_min(self):
     """Test a simple example of optimizing a RF model with a gaussian process looking for minimum score."""
