@@ -27,7 +27,7 @@ class TestGaussianHyperparamOpt(unittest.TestCase):
       rf_params = {k: v for (k, v) in model_params.items() if k != 'model_dir'}
       model_dir = model_params['model_dir']
       sklearn_model = sklearn.ensemble.RandomForestRegressor(
-          **rf_params, random_state=123)
+          **rf_params, random_state=456)
       return dc.models.SklearnModel(sklearn_model, model_dir)
 
     self.rf_model_builder = rf_model_builder
